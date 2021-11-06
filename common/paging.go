@@ -17,5 +17,5 @@ func (p *Paging) Fullfill() {
 	if p.Limit <= 0 {
 		p.Limit = 50
 	}
-	//p.NextCursor = strings.TrimSpace(p.NextCursor)
+	//p.NextCursor = strings.TrimSpace(string(p.NextCursor))
 }

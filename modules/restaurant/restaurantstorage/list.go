@@ -16,10 +16,6 @@ func (s *sqlStore) ListDataByCondition(ctx context.Context ,
 
 	db := s.db.Table(restaurantmodel.Restaurant{}.TableName())
 
-	for i := range moreKeys{
-		db = db.Preload(moreKeys[i])
-	}
-
 	db = db.Where(condition)
 
 	if filter!= nil{
@@ -31,13 +27,24 @@ func (s *sqlStore) ListDataByCondition(ctx context.Context ,
 		return nil, common.ErrDB(err)
 	}
 
+	for i := range moreKeys{
+		db = db.Preload(moreKeys[i])
+	}
+
+	if  paging.FakeCursor != 1 && paging.FakeCursor >0{
+		db = db.Where("id < ? ", paging.FakeCursor)
+	}else{
+		db = db.Offset((1-paging.Page)* paging.Limit)
+	}
+
 	if err:= db.
-		Offset((1-paging.Page)* paging.Limit).
 		Limit(paging.Limit).
 		Order("id desc").
 		Find(&result).Error ; err!= nil{
 		return nil, common.ErrDB(err)
 	}
+
+	paging.NextCursor = result[len(result)-1].Id
 
 	return result, nil
 }

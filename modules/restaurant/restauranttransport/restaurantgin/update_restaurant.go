@@ -15,6 +15,7 @@ func UpdateRestaurant(appCtx component.AppContext) gin.HandlerFunc{
 	return func(c *gin.Context) {
 		var data  restaurantmodel.RestaurantUpdate
 		id, err := strconv.Atoi(c.Param("id"))
+		//uid ,err := common.FromBase58(c.Param("id"))
 
 		if err != nil {
 			c.JSON(400, gin.H{"error":err.Error()})
@@ -28,7 +29,7 @@ func UpdateRestaurant(appCtx component.AppContext) gin.HandlerFunc{
 		store := restaurantstorage.NewSqlStore(appCtx.GetMainDBConnection())
 		biz := restaurantbiz.NewUpdateRestaurantBiz(store)
 
-		if	err := biz.UpdateRestaurant(c.Request.Context(),id,&data) ; err != nil {
+		if	err := biz.UpdateRestaurant(c.Request.Context(), id,&data) ; err != nil {
 			c.JSON(400, gin.H{"error":err.Error()})
 			return
 		}

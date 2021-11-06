@@ -12,7 +12,8 @@ import (
 func DeleteRestaurant(appCtx component.AppContext) gin.HandlerFunc{
 	return func(c *gin.Context) {
 
-		id ,err := strconv.Atoi( c.Param("id"))
+	 	id ,err := strconv.Atoi( c.Param("id"))
+	//	uid ,err := common.FromBase58(c.Param("id"))
 		if err!= nil{
 			c.JSON(400 , gin.H{"error" : err.Error()})
 			return
@@ -20,7 +21,7 @@ func DeleteRestaurant(appCtx component.AppContext) gin.HandlerFunc{
 
 		store := restaurantstorage.NewSqlStore(appCtx.GetMainDBConnection())
 		biz := restaurantbiz.NewDeleteRestaurantBiz(store)
-		if err := biz.DeleteRestaurant(c.Request.Context(),id); err != nil{
+		if err := biz.DeleteRestaurant(c.Request.Context(), id); err != nil{
 			c.JSON(500 , gin.H{"error": err.Error()})
 			return
 		}

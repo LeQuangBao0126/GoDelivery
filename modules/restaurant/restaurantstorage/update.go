@@ -4,6 +4,7 @@ import (
 	"ProjectDelivery/common"
 	"ProjectDelivery/modules/restaurant/restaurantmodel"
 	"context"
+	"gorm.io/gorm"
 )
 
 func (s *sqlStore)UpdateData(ctx context.Context,id int , data *restaurantmodel.RestaurantUpdate ) error{
@@ -13,3 +14,21 @@ func (s *sqlStore)UpdateData(ctx context.Context,id int , data *restaurantmodel.
 	}
 	return nil
 }
+
+func (s *sqlStore) IncreaseLikeCount(ctx context.Context,id int) error {
+	db := s.db.Table("restaurants")
+	if err := db.Where("id = ? ", id).
+		Update("liked_count", gorm.Expr("liked_count + 1")).Error; err != nil {
+			return err
+	}
+	return nil
+}
+func (s *sqlStore) DecreaseLikeCount(ctx context.Context,id int) error {
+	db := s.db.Table("restaurants")
+	if err := db.Where("id = ? ", id).
+		Update("liked_count", gorm.Expr("liked_count - 1")).Error; err != nil {
+		return err
+	}
+	return nil
+}
+//phut 36section 11
